@@ -162,20 +162,14 @@ lr.fit(X_train, y_train.ravel())
 Y_predict = lr.predict(X_test)
 Y_predict = np.array(Y_predict)
 Y_prediction = np.array(test['PassengerId'])
-Final = pd.DataFrame([Y_prediction, Y_predict]).T
-Final.columns = ['PassengerId', 'Survived']
-Y_predict = pd.DataFrame(Y_predict)
 print(lr.score(X_train, y_train))
 
 # %%
 # Fit train data to GBC
-
 gbc = GradientBoostingClassifier(n_estimators=500, learning_rate=0.05, random_state=100, max_features=5)
 Y_prediction = np.array(test['PassengerId'])
 gbc.fit(X_train, y_train.ravel())
 Y_predict = gbc.predict(X_test)
-Final = pd.DataFrame([Y_prediction, Y_predict]).T
-Final.columns = ['PassengerId', 'Survived']
 print(gbc.score(X_train, y_train))
 
 # %%
@@ -185,8 +179,6 @@ Rf = RandomForestClassifier(n_jobs=-1, n_estimators=500, random_state=100, max_f
 Y_prediction = np.array(test['PassengerId'])
 Rf.fit(X_train, y_train.ravel())
 Y_predict = Rf.predict(X_test)
-Final = pd.DataFrame([Y_prediction, Y_predict]).T
-Final.columns = ['PassengerId', 'Survived']
 print(Rf.score(X_train, y_train))
 
 # %%
