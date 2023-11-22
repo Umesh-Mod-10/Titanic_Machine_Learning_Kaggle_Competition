@@ -1,5 +1,4 @@
 # Titanic_Kaggle_Competition
-Hey All Data Science Enthuastihs!! Today I have come up with the titanic dataset which is higly recommanded for each and every data science aspiratent. In this we get 2 datasets
-Train and test datasets and we furthur process this data to predict the Surivial of the passengers of the titantic ship at 1917. I took the task of prediction by starting with data preprocessing by cleaning the
-given dataset and then fitting into Some classification models to check the accuracy. I used Logistic model, Decision Tree Classifier, Random Forest Classification, Gradient Boosting Classifier and XGB Classifier.
-This dataset is a must for the beginners who are trying out the data science feild and wanted to explore the feild as I do. I have referred some of the methods form kaggle for better accuracy
+Hey, All Data Science Enthuastihs!! Today, I have come up with the Titanic dataset, which is recommended for every data science aspirant. In this, we have two datasets, Train and test datasets. I further process this data to predict the survival of the passengers of the Titanic ship in 1917. I took the prediction by starting with data preprocessing by cleaning the
+given dataset and then fitting it into Some classification models to check the accuracy. I used the Logistic model, Decision Tree Classifier, Random Forest Classification, Gradient Boosting Classifier, and XGB Classifier.
+This dataset is a must for beginners, trying out the data science field and want to explore this domain as I do. I have referred to some of the methods from Kaggle for better accuracy. For the detailed analysis, I will post an article on achieving higher prediction scores on my medium page. 
