@@ -43,8 +43,6 @@ print(data.duplicated().sum())
 
 impute = data.isna().sum()
 Impute = SimpleImputer()
-# data['Age'] = Impute.fit_transform(data['Age'].to_numpy().reshape((-1, 1)))
-# test['Age'] = Impute.fit_transform(test['Age'].to_numpy().reshape((-1, 1)))
 test['Fare'] = Impute.fit_transform(test['Fare'].to_numpy().reshape((-1, 1)))
 data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
 
@@ -55,12 +53,12 @@ data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
 data['Name'] = data['Name'].str.extract(' ([A-Z,a-z]+)\. ', expand=False)
 sn.histplot(data=data, kde=True, x='Age')
 plt.show()
-data['Age'].fillna(data.groupby('Name')['Age'].transform("mean"), inplace=True)
+data['Age'].fillna(data.groupby('Name')['Age'].transform("median"), inplace=True)
 
 test['Name'] = test['Name'].str.extract(' ([A-Z,a-z]+)\. ', expand=False)
 sn.histplot(data=data, kde=True, x='Age')
 plt.show()
-test['Age'].fillna(data.groupby('Name')['Age'].transform("mean"), inplace=True)
+test['Age'].fillna(data.groupby('Name')['Age'].transform("median"), inplace=True)
 print(data.isna().sum())
 print(test.isna().sum())
 
