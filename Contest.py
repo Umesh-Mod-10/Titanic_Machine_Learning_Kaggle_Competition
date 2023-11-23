@@ -28,17 +28,11 @@ data.drop('Ticket', axis=1, inplace=True)
 test.drop('Cabin', axis=1, inplace=True)
 test.drop('Ticket', axis=1, inplace=True)
 
-# %% Remove the Nan from Embarked:
-
-#data.dropna(subset=['Embarked'], inplace=True)
-
-
 # %% Check for the duplicate values:
 
 print(data.duplicated().sum())
 
 # %% Filling the Nan values in Age column:
-
 # region By SimpleImputer:
 
 impute = data.isna().sum()
@@ -47,7 +41,6 @@ test['Fare'] = Impute.fit_transform(test['Fare'].to_numpy().reshape((-1, 1)))
 data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
 
 # endregion
-
 # region By Feature Engineering:
 
 data['Name'] = data['Name'].str.extract(' ([A-Z,a-z]+)\. ', expand=False)
@@ -93,15 +86,12 @@ X_train.loc[:, ['Age', 'Fare']] = minmax.fit_transform(X_train.loc[:, ['Age', 'F
 X_test.loc[:, ['Age', 'Fare']] = minmax.fit_transform(X_test.loc[:, ['Age', 'Fare']])
 
 # %% Model for ML regression:
-
-'''
 # Logistic Regression
 lr = LogisticRegression(max_iter=10000)
 lr.fit(X_train, y_train.ravel())
 Y_predict = lr.predict(X_test)
 Y_predict = np.array(Y_predict)
 Y_prediction = np.array(test['PassengerId'])
-'''
 
 # Fit train data to GBC
 gbc = GradientBoostingClassifier(n_estimators=500, learning_rate=0.05, random_state=100, max_features=5)
@@ -110,19 +100,17 @@ gbc.fit(X_train, y_train.ravel())
 Y_predict = gbc.predict(X_test)
 
 # Random Forest:
-'''
 Rf = RandomForestClassifier(n_jobs=-1, n_estimators=500, random_state=100, max_features=5)
 Y_prediction = np.array(test['PassengerId'])
 Rf.fit(X_train, y_train.ravel())
 Y_predict = Rf.predict(X_test)
-'''
+
 # %% Compling the Format:
 
 Final = pd.DataFrame([Y_prediction, Y_predict]).T
 Final.columns = ['PassengerId', 'Survived']
 
-# %%
+# %% Converting our findings into a CSV file:
 
 Final.to_csv("C:/Users/umesh/OneDrive/Desktop/Umesh/Sub.csv", index_label=True)
 
-# %%
