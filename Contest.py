@@ -108,7 +108,6 @@ rf1 = Rf.score(X_train, y_train)
 
 # %% XGB Regressor:
 
-rf1 = Rf.score(X_train, y_train)
 xgb_r = xg.XGBRegressor(n_estimators=1000, verbosity=3, n_jobs=-1)
 xgb_r.fit(X_train, y_train)
 Y_predict = xgb_r.predict(X_test)
