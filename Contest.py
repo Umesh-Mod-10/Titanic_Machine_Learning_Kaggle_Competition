@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sn
+import xgboost as xg
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.linear_model import LogisticRegression
@@ -16,7 +17,8 @@ test = pd.read_csv("C:/Users/umesh/OneDrive/Desktop/Umesh/Data Analysis/test_Tit
 
 # %% Getting the basic details of train:
 
-stats = data.describe()
+stats_data = data.describe()
+stats_test = test.describe()
 print(data.info())
 print(data.isna().sum())
 print(test.isna().sum())
@@ -33,25 +35,21 @@ test.drop('Ticket', axis=1, inplace=True)
 print(data.duplicated().sum())
 
 # %% Filling the Nan values in Age column:
-# region By SimpleImputer:
+# By SimpleImputer:
 
 impute = data.isna().sum()
-Impute = SimpleImputer()
+Impute = SimpleImputer(strategy="median")
 test['Fare'] = Impute.fit_transform(test['Fare'].to_numpy().reshape((-1, 1)))
 data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
 
-# endregion
-# region By Feature Engineering:
+# By Feature Engineering:
 
-data['Name'] = data['Name'].str.extract(' ([A-Z,a-z]+)\. ', expand=False)
-sn.histplot(data=data, kde=True, x='Age')
-plt.show()
-data['Age'].fillna(data.groupby('Name')['Age'].transform("median"), inplace=True)
+data['Title'] = data['Name'].str.extract(' ([A-Z,a-z]+)\. ', expand=False)
+data['Age'].fillna(data.groupby('Title')['Age'].transform("median"), inplace=True)
 
-test['Name'] = test['Name'].str.extract(' ([A-Z,a-z]+)\. ', expand=False)
-sn.histplot(data=data, kde=True, x='Age')
-plt.show()
-test['Age'].fillna(data.groupby('Name')['Age'].transform("median"), inplace=True)
+test['Title'] = test['Name'].str.extract(' ([A-Z,a-z]+)\. ', expand=False)
+test['Age'].fillna(data.groupby('Title')['Age'].transform("median"), inplace=True)
+
 print(data.isna().sum())
 print(test.isna().sum())
 
@@ -65,8 +63,8 @@ test['Embarked'] = label.fit_transform(test['Embarked'])
 
 # %% Dropping the Name value:
 
-data.drop('Name', axis=1, inplace=True)
-test.drop('Name', axis=1, inplace=True)
+data.drop(['Name', 'Title'], axis=1, inplace=True)
+test.drop(['Name', 'Title'], axis=1, inplace=True)
 
 # %% Converting all values to float:
 
@@ -92,18 +90,42 @@ lr.fit(X_train, y_train.ravel())
 Y_predict = lr.predict(X_test)
 Y_predict = np.array(Y_predict)
 Y_prediction = np.array(test['PassengerId'])
+lr1 = lr.score(X_train, y_train)
 
 # Fit train data to GBC
 gbc = GradientBoostingClassifier(n_estimators=500, learning_rate=0.05, random_state=100, max_features=5)
 Y_prediction = np.array(test['PassengerId'])
 gbc.fit(X_train, y_train.ravel())
 Y_predict = gbc.predict(X_test)
+gbc1 = gbc.score(X_train, y_train)
 
 # Random Forest:
 Rf = RandomForestClassifier(n_jobs=-1, n_estimators=500, random_state=100, max_features=5)
 Y_prediction = np.array(test['PassengerId'])
 Rf.fit(X_train, y_train.ravel())
 Y_predict = Rf.predict(X_test)
+rf1 = Rf.score(X_train, y_train)
+
+# %% XGB Regressor:
+
+rf1 = Rf.score(X_train, y_train)
+xgb_r = xg.XGBRegressor(n_estimators=1000, verbosity=3, n_jobs=-1)
+xgb_r.fit(X_train, y_train)
+Y_predict = xgb_r.predict(X_test)
+xbr1 = xgb_r.score(X_train, y_train)
+
+# %% Tabulation of the results:
+
+models = pd.DataFrame({'Model': ['Logistic Regression','Random Forest', 'XGB', 'Gradient Booster'], 'Score': [lr1, rf1, xbr1, gbc1]})
+sorted_model = models.sort_values(by='Score', ascending=False)
+
+# %% The graphical representation of the accuracy score:
+
+fig = plt.figure(figsize=(13, 10))
+sn.barplot((sorted_model['Score']), color='lightgreen', hatch='/', edgecolor='black', alpha=0.6)
+plt.xticks(ticks=range(len(sorted_model['Score'])), labels=sorted_model['Model'])
+plt.grid()
+plt.show()
 
 # %% Compling the Format:
 
@@ -114,3 +136,4 @@ Final.columns = ['PassengerId', 'Survived']
 
 Final.to_csv("C:/Users/umesh/OneDrive/Desktop/Umesh/Sub.csv", index_label=True)
 
+# %%
