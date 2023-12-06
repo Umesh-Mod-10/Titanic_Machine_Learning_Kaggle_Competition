@@ -12,8 +12,9 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 
 # %% Getting the datasets:
 
-data = pd.read_csv("C:/Users/umesh/OneDrive/Desktop/Umesh/Data Analysis/train_Titanic.csv")
-test = pd.read_csv("C:/Users/umesh/OneDrive/Desktop/Umesh/Data Analysis/test_Titanic.csv")
+data = pd.read_csv("/train_Titanic.csv")
+test = pd.read_csv("/test_Titanic.csv")
+sol = pd.read_csv("/sol_Titanic.csv")
 
 # %% Getting the basic details of train:
 
@@ -76,6 +77,7 @@ test.astype("float64")
 X_train = data.loc[:, ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']]
 y_train = data.loc[:, 'Survived'].to_numpy().reshape((-1, 1))
 X_test = test.loc[:, ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']]
+y_test = sol.loc[:, 'Survived'].to_numpy().reshape((-1, 1))
 
 # %% Scaling the values:
 
@@ -91,6 +93,7 @@ Y_predict = lr.predict(X_test)
 Y_predict = np.array(Y_predict)
 Y_prediction = np.array(test['PassengerId'])
 lr1 = lr.score(X_train, y_train)
+print(accuracy_score(Y_predict, y_test))
 
 # Fit train data to GBC
 gbc = GradientBoostingClassifier(n_estimators=500, learning_rate=0.05, random_state=100, max_features=5)
@@ -98,6 +101,7 @@ Y_prediction = np.array(test['PassengerId'])
 gbc.fit(X_train, y_train.ravel())
 Y_predict = gbc.predict(X_test)
 gbc1 = gbc.score(X_train, y_train)
+print(accuracy_score(Y_predict, y_test))
 
 # Random Forest:
 Rf = RandomForestClassifier(n_jobs=-1, n_estimators=500, random_state=100, max_features=5)
@@ -105,6 +109,7 @@ Y_prediction = np.array(test['PassengerId'])
 Rf.fit(X_train, y_train.ravel())
 Y_predict = Rf.predict(X_test)
 rf1 = Rf.score(X_train, y_train)
+print(accuracy_score(Y_predict, y_test))
 
 # %% XGB Regressor:
 
@@ -112,6 +117,7 @@ xgb_r = xg.XGBRegressor(n_estimators=1000, verbosity=3, n_jobs=-1)
 xgb_r.fit(X_train, y_train)
 Y_predict = xgb_r.predict(X_test)
 xbr1 = xgb_r.score(X_train, y_train)
+print(accuracy_score(Y_predict, y_test))
 
 # %% Tabulation of the results:
 
